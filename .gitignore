@@ -1,0 +1,10 @@
+/.idea/.name
+/.idea/cms-service.iml
+/.idea/deployment.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/.idea
+/web/protected/runtime/*
+/web/assets/*
