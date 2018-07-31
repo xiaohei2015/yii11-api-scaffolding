@@ -140,23 +140,6 @@ class HrController extends CmainController
         return $filename != ''?substr(strrchr($filename, '.'), 1):false;
     }
     /**
-     * 获取配置文件
-     */     
-    protected function getParamList()
-    {
-        $data = Yii::app()->cache->get('config_params_list');
-        if(!$data){
-            $list = SysStatic::model()->findAll(array('condition'=>"STATUS=1",'order'=>'PRIORITY ASC'));
-            if($list){
-                foreach($list as $v){
-                    $data[$v->CODE][$v->VALUE] = $v['LABEL'];
-                }
-                Yii::app()->cache->set('config_params_list',$data,3600);
-            }
-        }
-        return $data;
-    }
-    /**
      * 时间差计算
      *
      * @param Timestamp $time

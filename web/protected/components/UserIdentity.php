@@ -25,8 +25,8 @@ class UserIdentity extends CUserIdentity
         if($user==null){
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         }else{
-                if ($user->password==md5(Yii::app()->params["encryptKey"].$this->password.$user->SALT)) {
-                    $this->id = $user->ID;
+                if ($user->password==md5(Yii::app()->params["encryptKey"].$this->password.$user->salt)) {
+                    $this->id = $user->id;
                     //todo 判断登录后的用户身份加载用户的可选属性信息
                     $userinfo = null;
                     switch($usertype){
@@ -36,15 +36,15 @@ class UserIdentity extends CUserIdentity
                     }
 
                     if(isset($userinfo)){
-                        $users = array_merge($user->attributes,array('COMPANY_NAME'=>@$userinfo->COMPANY_NAME));
+                        $users = array_merge($user->attributes,array('COMPANY_NAME'=>@$userinfo->company_name));
                         $users['avatar'] = $users['avatar']?:'';
                         $users['sex'] = $users['sex']?:'0';
                         $users['email'] = $users['email']?:'';
                         $users['city'] = $users['city']?:'0';
-                        $users['is_bind_wechat'] = WeChatComponent::isBind($user->ID);
-                        $users['is_bind_qq'] = QqComponent::isBind($user->ID);
-                        $users['is_bind_weibo'] = WeiBoComponent::isBind($user->ID);
-                        $user->last_login = time()*1000;
+                        $users['is_bind_wechat'] = WeChatComponent::isBind($user->id);
+                        $users['is_bind_qq'] = QqComponent::isBind($user->id);
+                        $users['is_bind_weibo'] = WeiBoComponent::isBind($user->id);
+                        $user->last_login = time();
                         $user->save();
                         $this->setState("userinfo", $users);
                         $this->errorCode = self::ERROR_NONE;
@@ -61,18 +61,18 @@ class UserIdentity extends CUserIdentity
     //第三方登录
     public function authThirdParties($userid, $auth_type)
     {
-        $user = SysUserBasic::model()->findByAttributes(array("ID"=>$userid,"STATUS"=>1,"USERTYPE"=>2));
+        $user = SysUserBasic::model()->findByAttributes(array("id"=>$userid,"status"=>1,"user_type"=>2));
         $user_auth = UserAuths::model()->find("user_id=:user_id and app_type=:app_type",array(':user_id'=>$userid, ':app_type'=>$auth_type));
 
         if($user==null || $user_auth==null){
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         }else{
-            $this->id = $user->ID;
+            $this->id = $user->id;
             //todo 判断登录后的用户身份加载用户的可选属性信息
             $userinfo = SysUserHr::model()->findByPk($this->id);
 
             if(isset($userinfo)){
-                $users = array_merge($user->attributes,array('COMPANY_NAME'=>@$userinfo->COMPANY_NAME));
+                $users = array_merge($user->attributes,array('company_name'=>@$userinfo->company_name));
                 $users['avatar'] = $users['avatar']?:'';
                 $users['sex'] = $users['sex']?:'0';
                 $users['email'] = $users['email']?:'';
@@ -100,17 +100,17 @@ class UserIdentity extends CUserIdentity
     //第三方登录
     public function authCodeLogin($userid)
     {
-        $user = SysUserBasic::model()->findByAttributes(array("ID"=>$userid,"STATUS"=>1,"USERTYPE"=>2));
+        $user = SysUserBasic::model()->findByAttributes(array("id"=>$userid,"status"=>1,"user_type"=>2));
 
         if($user==null){
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         }else{
-            $this->id = $user->ID;
+            $this->id = $user->id;
             //todo 判断登录后的用户身份加载用户的可选属性信息
             $userinfo = SysUserHr::model()->findByPk($this->id);
 
             if(isset($userinfo)){
-                $users = array_merge($user->attributes,array('COMPANY_NAME'=>@$userinfo->COMPANY_NAME));
+                $users = array_merge($user->attributes,array('company_name'=>@$userinfo->company_name));
                 $users['avatar'] = $users['avatar']?:'';
                 $users['sex'] = $users['sex']?:'0';
                 $users['email'] = $users['email']?:'';
@@ -160,7 +160,7 @@ class UserIdentity extends CUserIdentity
         if($user==null){
             return false;
         }else{
-            return $user->STATUS==1;
+            return $user->status==1;
         }
     }
 

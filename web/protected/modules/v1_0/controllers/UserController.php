@@ -175,8 +175,8 @@ class UserController extends HrController
         //开始事务
         //$transaction = Yii::app()->db->beginTransaction();
         try {
-            $identity = new UserIdentity($model->ID, '');
-            $identity->authCodeLogin($model->ID);
+            $identity = new UserIdentity($model->id, '');
+            $identity->authCodeLogin($model->id);
 
             if ($identity->errorCode === UserIdentity::ERROR_NONE) {
                 Yii::app()->user->login($identity, 3600 * 24 * 30);
@@ -244,9 +244,9 @@ class UserController extends HrController
         if($phone==""){
             $this->outputJson($this->returnMsg('lessParams',"请填写手机号码"));
         }
-        if($code==""){
+        /*if($code==""){
             $this->outputJson($this->returnMsg('lessParams',"请填写短信验证码"));
-        }
+        }*/
         if($captcha==""){
             $this->outputJson($this->returnMsg('lessParams',"请填写图形验证码"));
         }
@@ -256,10 +256,10 @@ class UserController extends HrController
             $this->outputJson($this->returnMsg('failed', array('captcha'=>$result)));
         }
         //验证码
-        $result = MsgAuthManager::verifyCode($phone,$code);
+        /*$result = MsgAuthManager::verifyCode($phone,$code);
         if(true !== $result){
             $this->outputJson($this->returnMsg('failed', array('code'=>$result)));
-        }
+        }*/
 
         if($email==""){
             $this->outputJson($this->returnMsg('lessParams',"请填写email"));
@@ -314,7 +314,7 @@ class UserController extends HrController
             }
 
             $userhr = new SysUserHr();
-            $userhr->user_id = $model->ID;
+            $userhr->user_id = $model->id;
             $userhr->company_name = trim($company_name);
             if (!$userhr->save()) {
                 throw new Exception($this->getReturnError($userhr->getErrors()));
@@ -1010,7 +1010,7 @@ class UserController extends HrController
             if(!$thirdModel = UserAuths::model()->findByAttributes(['app_user_id'=>$appUserId,'app_type'=>$thirdType])){
                  throw new Exception('第三方唯一识别码错误！');
             }else{
-                $thirdModel->user_id = $model->ID;
+                $thirdModel->user_id = $model->id;
                 $thirdModel->is_bind = 1;
                 $thirdModel->update_time = time();
                 if(!$thirdModel->save()){
@@ -1019,7 +1019,7 @@ class UserController extends HrController
             }
             
             $userhr = new SysUserHr();
-            $userhr->user_id = $model->ID;
+            $userhr->user_id = $model->id;
             $userhr->company_name = trim($company_name);
             if (!$userhr->save()) {
                 throw new Exception($this->getReturnError($userhr->getErrors()));
